@@ -113,25 +113,15 @@ logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 -- LOGIC
-local foldersToDestroy = { "Assets", "Terrain & Foliage" }
-local destroyed = false
-
+local foldersToDisable = { "Assets", "Terrain & Foliage" }
+local cachedFolders = {}
+local enabled = false
 toggle.MouseButton1Click:Connect(function()
-	if destroyed then return end -- cegah double destroy
-
-	toggle.Text = "Map Erase : ON"
-	toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
-
-	for _, name in ipairs(foldersToDestroy) do
-		local f = workspace:FindFirstChild(name)
-		if f then
-			f:Destroy()
-		end
-	end
-
-	destroyed = true
-end)
-
+enabled = not enabled
+if enabled then 	toggle.Text = "Map Erase : ON" 	toggle.BackgroundColor3 = Color3.fromRGB(0,170,0) 	for _, name in ipairs(foldersToDisable) do 		local f = workspace:FindFirstChild(name) 		if f then 			cachedFolders[name] = f -- SIMPAN OBJEK 			f.Parent = nil 		end 	end else 	toggle.Text = "Map Erase : OFF" 	toggle.BackgroundColor3 = Color3.fromRGB(70,70,70) 	for _, folder in pairs(cachedFolders) do 		if folder then 			folder.Parent = workspace 		
+  end
+ end
+end
 local fpsEnabled = false
 local fpsConnection
 local frames = 0
