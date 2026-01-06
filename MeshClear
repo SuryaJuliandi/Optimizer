@@ -1,29 +1,66 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
--- UI
+-- ScreenGui
 local gui = Instance.new("ScreenGui")
 gui.Name = "SurrendFPSBoost"
 gui.Parent = player:WaitForChild("PlayerGui")
 
+------------------------------------------------
+-- MAIN FRAME
+------------------------------------------------
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 300, 0, 160)
 frame.Position = UDim2.new(0.05, 0, 0.3, 0)
-frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 
--- Title
+-- UICorner (rounded)
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 12)
+
+------------------------------------------------
+-- TITLE BAR
+------------------------------------------------
 local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, -60, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 0)
 title.Text = "SurrendFPSBoost"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.new(1,1,1)
 title.BackgroundTransparency = 1
+title.TextXAlignment = Left
 
--- Button
+-- Minimize Button (-)
+local minimize = Instance.new("TextButton", frame)
+minimize.Size = UDim2.new(0, 30, 0, 30)
+minimize.Position = UDim2.new(1, -70, 0, 5)
+minimize.Text = "-"
+minimize.Font = Enum.Font.GothamBold
+minimize.TextSize = 20
+minimize.TextColor3 = Color3.new(1,1,1)
+minimize.BackgroundColor3 = Color3.fromRGB(60,60,60)
+minimize.BorderSizePixel = 0
+Instance.new("UICorner", minimize).CornerRadius = UDim.new(1,0)
+
+-- Close Button (X)
+local close = Instance.new("TextButton", frame)
+close.Size = UDim2.new(0, 30, 0, 30)
+close.Position = UDim2.new(1, -35, 0, 5)
+close.Text = "X"
+close.Font = Enum.Font.GothamBold
+close.TextSize = 14
+close.TextColor3 = Color3.new(1,1,1)
+close.BackgroundColor3 = Color3.fromRGB(150,50,50)
+close.BorderSizePixel = 0
+Instance.new("UICorner", close).CornerRadius = UDim.new(1,0)
+
+------------------------------------------------
+-- MAP ERASE TOGGLE
+------------------------------------------------
 local toggle = Instance.new("TextButton", frame)
 toggle.Size = UDim2.new(1, -20, 0, 40)
 toggle.Position = UDim2.new(0, 10, 0, 60)
@@ -33,10 +70,27 @@ toggle.TextSize = 14
 toggle.TextColor3 = Color3.new(1,1,1)
 toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 toggle.BorderSizePixel = 0
+Instance.new("UICorner", toggle).CornerRadius = UDim.new(0,8)
 
--- Logic
+------------------------------------------------
+-- LOGO BUTTON (S)
+------------------------------------------------
+local logo = Instance.new("TextButton", gui)
+logo.Size = UDim2.new(0, 50, 0, 50)
+logo.Position = UDim2.new(0.05, 0, 0.3, 0)
+logo.Text = "S"
+logo.Font = Enum.Font.GothamBlack
+logo.TextSize = 28
+logo.TextColor3 = Color3.fromRGB(255,255,255)
+logo.BackgroundColor3 = Color3.fromRGB(180,0,0)
+logo.BorderSizePixel = 0
+logo.Visible = false
+Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
+
+------------------------------------------------
+-- LOGIC
+------------------------------------------------
 local enabled = false
-local erased = false
 
 toggle.MouseButton1Click:Connect(function()
 	enabled = not enabled
@@ -45,18 +99,34 @@ toggle.MouseButton1Click:Connect(function()
 		toggle.Text = "Map Erase : ON"
 		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		-- MAP ERASE
-		if not erased then
-			local folderName = "Assets"
-			local folder = workspace:FindFirstChild(folderName)
-			if folder then
-				folder:Destroy()
-				erased = true
-			end
+		local folder = workspace:FindFirstChild("Assets")
+		if folder then
+			folder.Parent = nil -- disable aman
 		end
 	else
 		toggle.Text = "Map Erase : OFF"
 		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
-		-- Tidak bisa restore folder (Destroy permanen)
+
+		local folder = workspace:FindFirstChild("Assets")
+		if folder then
+			folder.Parent = workspace
+		end
 	end
+end)
+
+-- Minimize
+minimize.MouseButton1Click:Connect(function()
+	frame.Visible = false
+	logo.Visible = true
+end)
+
+-- Restore from Logo
+logo.MouseButton1Click:Connect(function()
+	frame.Visible = true
+	logo.Visible = false
+end)
+
+-- Close
+close.MouseButton1Click:Connect(function()
+	gui:Destroy()
 end)
