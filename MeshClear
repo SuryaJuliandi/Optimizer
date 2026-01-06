@@ -77,31 +77,33 @@ logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 -- Logic
-local enabled = false
+local foldersToDisable = {
+	"Assets",
+	"Terrain & Foliage"
+}
 
 toggle.MouseButton1Click:Connect(function()
 	enabled = not enabled
+
 	if enabled then
 		toggle.Text = "Map Erase : ON"
 		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
-		local folder = workspace:FindFirstChild("Assets")
-		if folder then folder.Parent = nil end
+
+		for _, folderName in ipairs(foldersToDisable) do
+			local folder = workspace:FindFirstChild(folderName)
+			if folder then
+				folder.Parent = nil
+			end
+		end
 	else
 		toggle.Text = "Map Erase : OFF"
 		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+		for _, folderName in ipairs(foldersToDisable) do
+			local folder = workspace:FindFirstChild(folderName)
+			if folder then
+				folder.Parent = workspace
+			end
+		end
 	end
-end)
-
-minimize.MouseButton1Click:Connect(function()
-	frame.Visible = false
-	logo.Visible = true
-end)
-
-logo.MouseButton1Click:Connect(function()
-	frame.Visible = true
-	logo.Visible = false
-end)
-
-close.MouseButton1Click:Connect(function()
-	gui:Destroy()
 end)
