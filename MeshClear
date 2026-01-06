@@ -1,0 +1,33 @@
+local folderName = "Assets" -- nama folder di Workspace
+
+local folder = workspace:FindFirstChild(folderName)
+if folder then
+    folder:Destroy()
+end
+
+-- Simple Clear Map UI (Client-side)
+
+local player = game.Players.LocalPlayer
+
+-- UI
+local gui = Instance.new("ScreenGui")
+gui.Name = "ClearMapUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 150, 0, 50)
+button.Position = UDim2.new(0.5, -75, 0.8, 0)
+button.Text = "Clear Map"
+button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+button.TextColor3 = Color3.fromRGB(255, 255, 255)
+button.TextScaled = true
+button.Parent = gui
+
+-- Function
+button.MouseButton1Click:Connect(function()
+    local folder = workspace:FindFirstChild("MapPart") -- ganti nama folder
+    if folder then
+        folder:Destroy()
+    end
+end)
