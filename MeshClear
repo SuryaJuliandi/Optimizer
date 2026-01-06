@@ -1,12 +1,11 @@
-------------------------------------------------
--- SERVICES & PLAYER
-------------------------------------------------
+-- SERVICES
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
+local Terrain = workspace.Terrain
 
 ------------------------------------------------
--- GUI ROOT
+-- UI ROOT
 ------------------------------------------------
 local gui = Instance.new("ScreenGui")
 gui.Name = "SurrendFPSBoost"
@@ -14,10 +13,10 @@ gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 ------------------------------------------------
--- MAIN FRAME
+-- MAIN WINDOW
 ------------------------------------------------
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 300, 0, 160)
+frame.Size = UDim2.new(0, 300, 0, 210)
 frame.Position = UDim2.new(0.05, 0, 0.3, 0)
 frame.BackgroundColor3 = Color3.fromRGB(35,35,35)
 frame.BorderSizePixel = 0
@@ -26,33 +25,12 @@ frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
 
 ------------------------------------------------
--- FPS GUI
-------------------------------------------------
-local fpsGui = Instance.new("Frame", gui)
-fpsGui.Size = UDim2.new(0, 120, 0, 45)
-fpsGui.Position = UDim2.new(0.8, 0, 0.05, 0)
-fpsGui.BackgroundColor3 = Color3.fromRGB(30,30,30)
-fpsGui.BorderSizePixel = 0
-fpsGui.Visible = false
-fpsGui.Active = true
-fpsGui.Draggable = true
-Instance.new("UICorner", fpsGui).CornerRadius = UDim.new(0,10)
-
-local fpsLabel = Instance.new("TextLabel", fpsGui)
-fpsLabel.Size = UDim2.new(1, 0, 1, 0)
-fpsLabel.BackgroundTransparency = 1
-fpsLabel.Font = Enum.Font.GothamBold
-fpsLabel.TextSize = 16
-fpsLabel.TextColor3 = Color3.new(1,1,1)
-fpsLabel.Text = "FPS: 0"
-
-------------------------------------------------
 -- TITLE
 ------------------------------------------------
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, -60, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 0)
-title.Text = "SurrendBooster"
+title.Text = "Surrend FPS Booster"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.new(1,1,1)
@@ -60,11 +38,11 @@ title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
 
 ------------------------------------------------
--- BUTTONS
+-- MINIMIZE & CLOSE
 ------------------------------------------------
 local minimize = Instance.new("TextButton", frame)
-minimize.Size = UDim2.new(0, 30, 0, 30)
-minimize.Position = UDim2.new(1, -70, 0, 5)
+minimize.Size = UDim2.new(0,30,0,30)
+minimize.Position = UDim2.new(1,-70,0,5)
 minimize.Text = "-"
 minimize.Font = Enum.Font.GothamBold
 minimize.TextSize = 20
@@ -74,8 +52,8 @@ minimize.BorderSizePixel = 0
 Instance.new("UICorner", minimize).CornerRadius = UDim.new(1,0)
 
 local close = Instance.new("TextButton", frame)
-close.Size = UDim2.new(0, 30, 0, 30)
-close.Position = UDim2.new(1, -35, 0, 5)
+close.Size = UDim2.new(0,30,0,30)
+close.Position = UDim2.new(1,-35,0,5)
 close.Text = "X"
 close.Font = Enum.Font.GothamBold
 close.TextSize = 14
@@ -85,22 +63,25 @@ close.BorderSizePixel = 0
 Instance.new("UICorner", close).CornerRadius = UDim.new(1,0)
 
 ------------------------------------------------
--- TOGGLES
+-- MAP ERASE (SAFE VISUAL)
 ------------------------------------------------
-local toggle = Instance.new("TextButton", frame)
-toggle.Size = UDim2.new(1, -20, 0, 40)
-toggle.Position = UDim2.new(0, 10, 0, 60)
-toggle.Text = "Map Erase : OFF"
-toggle.Font = Enum.Font.Gotham
-toggle.TextSize = 14
-toggle.TextColor3 = Color3.new(1,1,1)
-toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
-toggle.BorderSizePixel = 0
-Instance.new("UICorner", toggle).CornerRadius = UDim.new(0,8)
+local mapToggle = Instance.new("TextButton", frame)
+mapToggle.Size = UDim2.new(1,-20,0,40)
+mapToggle.Position = UDim2.new(0,10,0,50)
+mapToggle.Text = "Map Erase : OFF"
+mapToggle.Font = Enum.Font.Gotham
+mapToggle.TextSize = 14
+mapToggle.TextColor3 = Color3.new(1,1,1)
+mapToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+mapToggle.BorderSizePixel = 0
+Instance.new("UICorner", mapToggle).CornerRadius = UDim.new(0,8)
 
+------------------------------------------------
+-- FPS MONITOR
+------------------------------------------------
 local fpsToggle = Instance.new("TextButton", frame)
-fpsToggle.Size = UDim2.new(1, -20, 0, 40)
-fpsToggle.Position = UDim2.new(0, 10, 0, 110)
+fpsToggle.Size = UDim2.new(1,-20,0,40)
+fpsToggle.Position = UDim2.new(0,10,0,100)
 fpsToggle.Text = "FPS Monitor : OFF"
 fpsToggle.Font = Enum.Font.Gotham
 fpsToggle.TextSize = 14
@@ -109,11 +90,43 @@ fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 fpsToggle.BorderSizePixel = 0
 Instance.new("UICorner", fpsToggle).CornerRadius = UDim.new(0,8)
 
+local fpsGui = Instance.new("Frame", gui)
+fpsGui.Size = UDim2.new(0,120,0,45)
+fpsGui.Position = UDim2.new(0.8,0,0.05,0)
+fpsGui.BackgroundColor3 = Color3.fromRGB(30,30,30)
+fpsGui.BorderSizePixel = 0
+fpsGui.Visible = false
+fpsGui.Active = true
+fpsGui.Draggable = true
+Instance.new("UICorner", fpsGui).CornerRadius = UDim.new(0,10)
+
+local fpsLabel = Instance.new("TextLabel", fpsGui)
+fpsLabel.Size = UDim2.new(1,0,1,0)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 16
+fpsLabel.TextColor3 = Color3.new(1,1,1)
+fpsLabel.Text = "FPS: 0"
+
 ------------------------------------------------
--- LOGO MINIMIZED
+-- EXTREME MODE (SAFE, NO ANTI-TP)
+------------------------------------------------
+local extremeToggle = Instance.new("TextButton", frame)
+extremeToggle.Size = UDim2.new(1,-20,0,40)
+extremeToggle.Position = UDim2.new(0,10,0,150)
+extremeToggle.Text = "Extreme Mode : OFF"
+extremeToggle.Font = Enum.Font.Gotham
+extremeToggle.TextSize = 14
+extremeToggle.TextColor3 = Color3.new(1,1,1)
+extremeToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+extremeToggle.BorderSizePixel = 0
+Instance.new("UICorner", extremeToggle).CornerRadius = UDim.new(0,8)
+
+------------------------------------------------
+-- LOGO
 ------------------------------------------------
 local logo = Instance.new("TextButton", gui)
-logo.Size = UDim2.new(0, 50, 0, 50)
+logo.Size = UDim2.new(0,50,0,50)
 logo.Position = frame.Position
 logo.Text = "S"
 logo.Font = Enum.Font.GothamBlack
@@ -127,72 +140,97 @@ logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 ------------------------------------------------
--- MAP ERASE LOGIC
+-- LOGIC
 ------------------------------------------------
-local foldersToDisable = { "Assets", "Terrain & Foliage" }
-local cachedFolders = {}
-local eraseEnabled = false
+local fpsConn
+local extremeCache = {}
+local extremeOn = false
+local mapOn = false
 
-toggle.MouseButton1Click:Connect(function()
-	eraseEnabled = not eraseEnabled
-
-	if eraseEnabled then
-		toggle.Text = "Map Erase : ON"
-		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
-
-		for _, name in ipairs(foldersToDisable) do
-			local f = workspace:FindFirstChild(name)
-			if f then
-				cachedFolders[name] = f
-				f.Parent = nil
-			end
-		end
+-- FPS
+fpsToggle.MouseButton1Click:Connect(function()
+	if fpsConn then
+		fpsConn:Disconnect()
+		fpsConn = nil
+		fpsGui.Visible = false
+		fpsToggle.Text = "FPS Monitor : OFF"
+		fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 	else
-		toggle.Text = "Map Erase : OFF"
-		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+		fpsGui.Visible = true
+		fpsToggle.Text = "FPS Monitor : ON"
+		fpsToggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		for _, folder in pairs(cachedFolders) do
-			if folder then
-				folder.Parent = workspace
+		local last = os.clock()
+		local frames = 0
+
+		fpsConn = RunService.RenderStepped:Connect(function()
+			frames += 1
+			if os.clock() - last >= 1 then
+				fpsLabel.Text = "FPS: "..frames
+				frames = 0
+				last = os.clock()
 			end
+		end)
+	end
+end)
+
+-- MAP ERASE (VISUAL ONLY)
+mapToggle.MouseButton1Click:Connect(function()
+	mapOn = not mapOn
+	mapToggle.Text = mapOn and "Map Erase : ON" or "Map Erase : OFF"
+	mapToggle.BackgroundColor3 = mapOn and Color3.fromRGB(0,170,0) or Color3.fromRGB(70,70,70)
+
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("BasePart") then
+			v.LocalTransparencyModifier = mapOn and 1 or 0
+			v.CastShadow = not mapOn
 		end
 	end
 end)
 
-------------------------------------------------
--- FPS MONITOR LOGIC
-------------------------------------------------
-local fpsEnabled = false
-local fpsConnection
+-- EXTREME MODE
+extremeToggle.MouseButton1Click:Connect(function()
+	extremeOn = not extremeOn
+	extremeToggle.Text = extremeOn and "Extreme Mode : ON" or "Extreme Mode : OFF"
+	extremeToggle.BackgroundColor3 = extremeOn and Color3.fromRGB(170,0,0) or Color3.fromRGB(70,70,70)
 
-fpsToggle.MouseButton1Click:Connect(function()
-	fpsEnabled = not fpsEnabled
+	if extremeOn then
+		extremeCache.Water = {
+			Terrain.WaterWaveSize,
+			Terrain.WaterReflectance,
+			Terrain.WaterTransparency
+		}
 
-	if fpsEnabled then
-		fpsToggle.Text = "FPS Monitor : ON"
-		fpsToggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
-		fpsGui.Visible = true
+		Terrain.WaterWaveSize = 0
+		Terrain.WaterReflectance = 0
+		Terrain.WaterTransparency = 1
 
-		local last = tick()
-		local frames = 0
-
-		fpsConnection = RunService.RenderStepped:Connect(function()
-			frames += 1
-			if tick() - last >= 1 then
-				fpsLabel.Text = "FPS: "..frames
-				frames = 0
-				last = tick()
+		for _, v in ipairs(workspace:GetDescendants()) do
+			if v:IsA("BasePart") then
+				extremeCache[v] = {
+					v.Material,
+					v.CastShadow
+				}
+				v.Material = Enum.Material.Plastic
+				v.CastShadow = false
+				v.LocalTransparencyModifier = 1
 			end
-		end)
-	else
-		fpsToggle.Text = "FPS Monitor : OFF"
-		fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
-		fpsGui.Visible = false
-
-		if fpsConnection then
-			fpsConnection:Disconnect()
-			fpsConnection = nil
 		end
+	else
+		if extremeCache.Water then
+			Terrain.WaterWaveSize = extremeCache.Water[1]
+			Terrain.WaterReflectance = extremeCache.Water[2]
+			Terrain.WaterTransparency = extremeCache.Water[3]
+		end
+
+		for inst, data in pairs(extremeCache) do
+			if typeof(inst) == "Instance" and inst:IsA("BasePart") then
+				inst.Material = data[1]
+				inst.CastShadow = data[2]
+				inst.LocalTransparencyModifier = 0
+			end
+		end
+		table.clear(extremeCache)
 	end
 end)
 
