@@ -17,6 +17,26 @@ frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
+local RunService = game:GetService("RunService")
+
+-- FPS UI
+local fpsGui = Instance.new("Frame", gui)
+fpsGui.Size = UDim2.new(0, 120, 0, 45)
+fpsGui.Position = UDim2.new(0.8, 0, 0.05, 0)
+fpsGui.BackgroundColor3 = Color3.fromRGB(30,30,30)
+fpsGui.BorderSizePixel = 0
+fpsGui.Visible = false
+fpsGui.Active = true
+fpsGui.Draggable = true
+Instance.new("UICorner", fpsGui).CornerRadius = UDim.new(0,10)
+
+local fpsLabel = Instance.new("TextLabel", fpsGui)
+fpsLabel.Size = UDim2.new(1, 0, 1, 0)
+fpsLabel.BackgroundTransparency = 1
+fpsLabel.Font = Enum.Font.GothamBold
+fpsLabel.TextSize = 16
+fpsLabel.TextColor3 = Color3.new(1,1,1)
+fpsLabel.Text = "FPS: 0"
 
 -- Title
 local title = Instance.new("TextLabel", frame)
@@ -65,6 +85,18 @@ toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 toggle.BorderSizePixel = 0
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(0,8)
 
+-- FPS Monitor Toggle
+local fpsToggle = Instance.new("TextButton", frame)
+fpsToggle.Size = UDim2.new(1, -20, 0, 40)
+fpsToggle.Position = UDim2.new(0, 10, 0, 110)
+fpsToggle.Text = "FPS Monitor : OFF"
+fpsToggle.Font = Enum.Font.Gotham
+fpsToggle.TextSize = 14
+fpsToggle.TextColor3 = Color3.new(1,1,1)
+fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+fpsToggle.BorderSizePixel = 0
+Instance.new("UICorner", fpsToggle).CornerRadius = UDim.new(0,8)
+
 -- Logo S
 local logo = Instance.new("TextButton", gui)
 logo.Size = UDim2.new(0, 50, 0, 50)
@@ -99,6 +131,53 @@ toggle.MouseButton1Click:Connect(function()
 
 	destroyed = true
 end)
+
+local fpsEnabled = false
+local fpsConnection
+local frames = 0
+local lastTime = os.clock()
+
+fpsToggle.MouseButton1Click:Connect(function()
+	fpsEnabled = not fpsEnabled
+
+	if fpsEnabled then
+		fpsToggle.Text = "FPS Monitor : ON"
+		fpsToggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
+		fpsGui.Visible = true
+
+		frames = 0
+		lastTime = os.clock()
+
+		fpsConnection = RunService.RenderStepped:Connect(function()
+			frames += 1
+			if os.clock() - lastTime >= 1 then
+				local fps = frames
+				frames = 0
+				lastTime = os.clock()
+
+				fpsLabel.Text = "FPS: "..fps
+
+				if fps >= 50 then
+					fpsLabel.TextColor3 = Color3.fromRGB(0,255,0)
+				elseif fps >= 30 then
+					fpsLabel.TextColor3 = Color3.fromRGB(255,200,0)
+				else
+					fpsLabel.TextColor3 = Color3.fromRGB(255,60,60)
+				end
+			end
+		end)
+	else
+		fpsToggle.Text = "FPS Monitor : OFF"
+		fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+		fpsGui.Visible = false
+
+		if fpsConnection then
+			fpsConnection:Disconnect()
+			fpsConnection = nil
+		end
+	end
+end)
+
 ------------------------------------------------
 -- WINDOW CONTROL (FIXED)
 ------------------------------------------------
