@@ -1,15 +1,3 @@
-local folderName = "Assets" -- nama folder di Workspace
-
-local folder = workspace:FindFirstChild(folderName)
-if folder then
-    folder:Destroy()
-end
-
--- Simple Clear Map UI (Client-side)
-
-local player = game.Players.LocalPlayer
-
--- UI
 local gui = Instance.new("ScreenGui")
 gui.Name = "ClearMapUI"
 gui.ResetOnSpawn = false
