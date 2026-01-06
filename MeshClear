@@ -22,7 +22,7 @@ Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, -60, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 0)
-title.Text = "SurrendFPSBoost"
+title.Text = "SurrendBooster"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
 title.TextColor3 = Color3.new(1,1,1)
@@ -81,34 +81,23 @@ logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 -- LOGIC
-local foldersToDisable = { "Assets", "Terrain & Foliage" }
-local cachedFolders = {}
-local enabled = false
+local foldersToDestroy = { "Assets", "Terrain & Foliage" }
+local destroyed = false
 
 toggle.MouseButton1Click:Connect(function()
-	enabled = not enabled
+	if destroyed then return end -- cegah double destroy
 
-	if enabled then
-		toggle.Text = "Map Erase : ON"
-		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
+	toggle.Text = "Map Erase : ON"
+	toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-		for _, name in ipairs(foldersToDisable) do
-			local f = workspace:FindFirstChild(name)
-			if f then
-				cachedFolders[name] = f -- SIMPAN OBJEK
-				f.Parent = nil
-			end
-		end
-	else
-		toggle.Text = "Map Erase : OFF"
-		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
-
-		for _, folder in pairs(cachedFolders) do
-			if folder then
-				folder.Parent = workspace
-			end
+	for _, name in ipairs(foldersToDestroy) do
+		local f = workspace:FindFirstChild(name)
+		if f then
+			f:Destroy()
 		end
 	end
+
+	destroyed = true
 end)
 ------------------------------------------------
 -- WINDOW CONTROL (FIXED)
