@@ -72,6 +72,8 @@ logo.TextColor3 = Color3.new(1,1,1)
 logo.BackgroundColor3 = Color3.fromRGB(180,0,0)
 logo.BorderSizePixel = 0
 logo.Visible = false
+logo.Active = true
+logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 -- Logic
