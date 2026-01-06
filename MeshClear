@@ -114,49 +114,37 @@ Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
 -- LOGIC
 local foldersToDisable = { "Assets", "Terrain & Foliage" }
+local foldersToDisable = { "Assets", "Terrain & Foliage" }
 local cachedFolders = {}
 local enabled = false
+
 toggle.MouseButton1Click:Connect(function()
-enabled = not enabled
-if enabled then 	toggle.Text = "Map Erase : ON" 	toggle.BackgroundColor3 = Color3.fromRGB(0,170,0) 	for _, name in ipairs(foldersToDisable) do 		local f = workspace:FindFirstChild(name) 		if f then 			cachedFolders[name] = f -- SIMPAN OBJEK 			f.Parent = nil 		end 	end else 	toggle.Text = "Map Erase : OFF" 	toggle.BackgroundColor3 = Color3.fromRGB(70,70,70) 	for _, folder in pairs(cachedFolders) do 		if folder then 			folder.Parent = workspace 		
-  end
- end
-end
-local fpsEnabled = false
-local fpsConnection
-local frames = 0
-local lastTime = os.clock()
+	enabled = not enabled
 
-fpsToggle.MouseButton1Click:Connect(function()
-	fpsEnabled = not fpsEnabled
+	if enabled then
+		toggle.Text = "Map Erase : ON"
+		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
-	if fpsEnabled then
-		fpsToggle.Text = "FPS Monitor : ON"
-		fpsToggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
-		fpsGui.Visible = true
-
-		frames = 0
-		lastTime = os.clock()
-
-		fpsConnection = RunService.RenderStepped:Connect(function()
-			frames += 1
-			if os.clock() - lastTime >= 1 then
-				local fps = frames
-				frames = 0
-				lastTime = os.clock()
-
-				fpsLabel.Text = "FPS: "..fps
-
-				if fps >= 50 then
-					fpsLabel.TextColor3 = Color3.fromRGB(0,255,0)
-				elseif fps >= 30 then
-					fpsLabel.TextColor3 = Color3.fromRGB(255,200,0)
-				else
-					fpsLabel.TextColor3 = Color3.fromRGB(255,60,60)
-				end
+		for _, name in ipairs(foldersToDisable) do
+			local f = workspace:FindFirstChild(name)
+			if f then
+				cachedFolders[name] = f -- SIMPAN OBJEK
+				f.Parent = nil
 			end
-		end)
+		end
 	else
+		toggle.Text = "Map Erase : OFF"
+		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+		for _, folder in pairs(cachedFolders) do
+			if folder then
+				folder.Parent = workspace
+			end
+		end
+	end
+end)
+
+else
 		fpsToggle.Text = "FPS Monitor : OFF"
 		fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 		fpsGui.Visible = false
