@@ -83,7 +83,7 @@ Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 ------------------------------------------------
 -- MAP ERASE LOGIC (SAFE)
 ------------------------------------------------
-local foldersToDisable = { "Assets", "Map", "Effects" }
+local foldersToDisable = { "Assets", "Terrain & Foliage" }
 local cachedFolders = {}
 local enabled = false
 
