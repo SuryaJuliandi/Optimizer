@@ -80,9 +80,7 @@ logo.Active = true
 logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
-------------------------------------------------
--- MAP ERASE LOGIC (SAFE)
-------------------------------------------------
+-- LOGIC
 local foldersToDisable = { "Assets", "Terrain & Foliage" }
 local cachedFolders = {}
 local enabled = false
@@ -97,7 +95,7 @@ toggle.MouseButton1Click:Connect(function()
 		for _, name in ipairs(foldersToDisable) do
 			local f = workspace:FindFirstChild(name)
 			if f then
-				cachedFolders[name] = f.Parent
+				cachedFolders[name] = f -- SIMPAN OBJEK
 				f.Parent = nil
 			end
 		end
@@ -105,17 +103,13 @@ toggle.MouseButton1Click:Connect(function()
 		toggle.Text = "Map Erase : OFF"
 		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 
-		for name, parent in pairs(cachedFolders) do
-			if parent then
-				local f = workspace:FindFirstChild(name) or parent:FindFirstChild(name)
-				if f then
-					f.Parent = parent
-				end
+		for _, folder in pairs(cachedFolders) do
+			if folder then
+				folder.Parent = workspace
 			end
 		end
 	end
 end)
-
 ------------------------------------------------
 -- WINDOW CONTROL (FIXED)
 ------------------------------------------------
