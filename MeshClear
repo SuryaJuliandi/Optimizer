@@ -1,21 +1,62 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- UI
 local gui = Instance.new("ScreenGui")
-gui.Name = "ClearMapUI"
-gui.ResetOnSpawn = false
+gui.Name = "SurrendFPSBoost"
 gui.Parent = player:WaitForChild("PlayerGui")
 
-local button = Instance.new("TextButton")
-button.Size = UDim2.new(0, 150, 0, 50)
-button.Position = UDim2.new(0.5, -75, 0.8, 0)
-button.Text = "Clear Map"
-button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-button.TextColor3 = Color3.fromRGB(255, 255, 255)
-button.TextScaled = true
-button.Parent = gui
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 300, 0, 160)
+frame.Position = UDim2.new(0.05, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
 
--- Function
-button.MouseButton1Click:Connect(function()
-    local folder = workspace:FindFirstChild("MapPart") -- ganti nama folder
-    if folder then
-        folder:Destroy()
-    end
+-- Title
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Text = "SurrendFPSBoost"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 18
+title.TextColor3 = Color3.new(1,1,1)
+title.BackgroundTransparency = 1
+
+-- Button
+local toggle = Instance.new("TextButton", frame)
+toggle.Size = UDim2.new(1, -20, 0, 40)
+toggle.Position = UDim2.new(0, 10, 0, 60)
+toggle.Text = "Map Erase : OFF"
+toggle.Font = Enum.Font.Gotham
+toggle.TextSize = 14
+toggle.TextColor3 = Color3.new(1,1,1)
+toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+toggle.BorderSizePixel = 0
+
+-- Logic
+local enabled = false
+local erased = false
+
+toggle.MouseButton1Click:Connect(function()
+	enabled = not enabled
+
+	if enabled then
+		toggle.Text = "Map Erase : ON"
+		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
+
+		-- MAP ERASE
+		if not erased then
+			local folderName = "Assets"
+			local folder = workspace:FindFirstChild(folderName)
+			if folder then
+				folder:Destroy()
+				erased = true
+			end
+		end
+	else
+		toggle.Text = "Map Erase : OFF"
+		toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+		-- Tidak bisa restore folder (Destroy permanen)
+	end
 end)
