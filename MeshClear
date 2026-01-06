@@ -1,14 +1,21 @@
+------------------------------------------------
+-- SERVICES & PLAYER
+------------------------------------------------
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
 ------------------------------------------------
--- UI
+-- GUI ROOT
 ------------------------------------------------
 local gui = Instance.new("ScreenGui")
 gui.Name = "SurrendFPSBoost"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
+------------------------------------------------
+-- MAIN FRAME
+------------------------------------------------
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 300, 0, 160)
 frame.Position = UDim2.new(0.05, 0, 0.3, 0)
@@ -17,9 +24,10 @@ frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0,12)
-local RunService = game:GetService("RunService")
 
--- FPS UI
+------------------------------------------------
+-- FPS GUI
+------------------------------------------------
 local fpsGui = Instance.new("Frame", gui)
 fpsGui.Size = UDim2.new(0, 120, 0, 45)
 fpsGui.Position = UDim2.new(0.8, 0, 0.05, 0)
@@ -38,7 +46,9 @@ fpsLabel.TextSize = 16
 fpsLabel.TextColor3 = Color3.new(1,1,1)
 fpsLabel.Text = "FPS: 0"
 
--- Title
+------------------------------------------------
+-- TITLE
+------------------------------------------------
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, -60, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 0)
@@ -49,7 +59,9 @@ title.TextColor3 = Color3.new(1,1,1)
 title.BackgroundTransparency = 1
 title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Minimize
+------------------------------------------------
+-- BUTTONS
+------------------------------------------------
 local minimize = Instance.new("TextButton", frame)
 minimize.Size = UDim2.new(0, 30, 0, 30)
 minimize.Position = UDim2.new(1, -70, 0, 5)
@@ -61,7 +73,6 @@ minimize.BackgroundColor3 = Color3.fromRGB(60,60,60)
 minimize.BorderSizePixel = 0
 Instance.new("UICorner", minimize).CornerRadius = UDim.new(1,0)
 
--- Close
 local close = Instance.new("TextButton", frame)
 close.Size = UDim2.new(0, 30, 0, 30)
 close.Position = UDim2.new(1, -35, 0, 5)
@@ -73,7 +84,9 @@ close.BackgroundColor3 = Color3.fromRGB(150,50,50)
 close.BorderSizePixel = 0
 Instance.new("UICorner", close).CornerRadius = UDim.new(1,0)
 
--- Toggle
+------------------------------------------------
+-- TOGGLES
+------------------------------------------------
 local toggle = Instance.new("TextButton", frame)
 toggle.Size = UDim2.new(1, -20, 0, 40)
 toggle.Position = UDim2.new(0, 10, 0, 60)
@@ -85,7 +98,6 @@ toggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 toggle.BorderSizePixel = 0
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(0,8)
 
--- FPS Monitor Toggle
 local fpsToggle = Instance.new("TextButton", frame)
 fpsToggle.Size = UDim2.new(1, -20, 0, 40)
 fpsToggle.Position = UDim2.new(0, 10, 0, 110)
@@ -97,7 +109,9 @@ fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 fpsToggle.BorderSizePixel = 0
 Instance.new("UICorner", fpsToggle).CornerRadius = UDim.new(0,8)
 
--- Logo S
+------------------------------------------------
+-- LOGO MINIMIZED
+------------------------------------------------
 local logo = Instance.new("TextButton", gui)
 logo.Size = UDim2.new(0, 50, 0, 50)
 logo.Position = frame.Position
@@ -112,23 +126,24 @@ logo.Active = true
 logo.Draggable = true
 Instance.new("UICorner", logo).CornerRadius = UDim.new(1,0)
 
--- LOGIC
-local foldersToDisable = { "Assets", "Terrain & Foliage" }
+------------------------------------------------
+-- MAP ERASE LOGIC
+------------------------------------------------
 local foldersToDisable = { "Assets", "Terrain & Foliage" }
 local cachedFolders = {}
-local enabled = false
+local eraseEnabled = false
 
 toggle.MouseButton1Click:Connect(function()
-	enabled = not enabled
+	eraseEnabled = not eraseEnabled
 
-	if enabled then
+	if eraseEnabled then
 		toggle.Text = "Map Erase : ON"
 		toggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
 
 		for _, name in ipairs(foldersToDisable) do
 			local f = workspace:FindFirstChild(name)
 			if f then
-				cachedFolders[name] = f -- SIMPAN OBJEK
+				cachedFolders[name] = f
 				f.Parent = nil
 			end
 		end
@@ -144,7 +159,32 @@ toggle.MouseButton1Click:Connect(function()
 	end
 end)
 
-else
+------------------------------------------------
+-- FPS MONITOR LOGIC
+------------------------------------------------
+local fpsEnabled = false
+local fpsConnection
+
+fpsToggle.MouseButton1Click:Connect(function()
+	fpsEnabled = not fpsEnabled
+
+	if fpsEnabled then
+		fpsToggle.Text = "FPS Monitor : ON"
+		fpsToggle.BackgroundColor3 = Color3.fromRGB(0,170,0)
+		fpsGui.Visible = true
+
+		local last = tick()
+		local frames = 0
+
+		fpsConnection = RunService.RenderStepped:Connect(function()
+			frames += 1
+			if tick() - last >= 1 then
+				fpsLabel.Text = "FPS: "..frames
+				frames = 0
+				last = tick()
+			end
+		end)
+	else
 		fpsToggle.Text = "FPS Monitor : OFF"
 		fpsToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
 		fpsGui.Visible = false
@@ -157,7 +197,7 @@ else
 end)
 
 ------------------------------------------------
--- WINDOW CONTROL (FIXED)
+-- WINDOW CONTROL
 ------------------------------------------------
 minimize.MouseButton1Click:Connect(function()
 	logo.Position = frame.Position
